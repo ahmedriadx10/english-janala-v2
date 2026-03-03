@@ -4,6 +4,9 @@ const levelButtonsContainer = document.getElementById(
 const wordContainer = document.getElementById("words-container");
 const loadingContainer = document.getElementById("spinner-container");
 
+const wordDataContainer = document.getElementById("word-data");
+const wordModalDialogue = document.getElementById("word_modal");
+
 async function loadAllLessonButton() {
   const getLessonButtonData = await fetch(
     "https://openapi.programming-hero.com/api/levels/all",
@@ -64,8 +67,8 @@ function renderDataOnUI(getDataContainer) {
 <p class="font-medium text-xl">Meaning/Pronounciation</p>
 <p class="font-bangla text-2xl font-semibold">${meaning ? meaning : "অর্থ খুঁজে পাওয়া যায়নি"}/${pronunciation}</p>
 <div class="flex justify-between items-center mt-10">
-<button class="btn bg-primary-content text-lg" ><i class="fa-solid fa-circle-info pointer-events-none"></i></button>
-<button  class="btn bg-primary-content text-lg"><i class="fa-solid fa-volume-high pointer-events-none"></i></button>
+<button onclick="infoShow(${id})" class=" btn bg-primary-content text-lg" ><i class="fa-solid fa-circle-info pointer-events-none"></i></button>
+<button onclick='listenVoice(word)' class=" btn bg-primary-content text-lg"><i class="fa-solid fa-volume-high pointer-events-none"></i></button>
 
 </div>
 </div>
@@ -75,13 +78,13 @@ function renderDataOnUI(getDataContainer) {
 }
 
 async function specificLessonDataGet(id) {
-  spinnerShow(true)
+  spinnerShow(true);
   const getSpecificLessonWords = await fetch(
     `https://openapi.programming-hero.com/api/level/${id}`,
   );
 
   const convJsData = await getSpecificLessonWords.json();
-spinnerShow(false)
+  spinnerShow(false);
   renderDataOnUI(convJsData.data);
 }
 
@@ -100,17 +103,50 @@ levelButtonsContainer.addEventListener("click", (event) => {
   }
 });
 
+async function infoShow(id) {
+  // getting specfic word details using api
 
-function spinnerShow(wanna){
+  const getWordDetails = await fetch(
+    `https://openapi.programming-hero.com/api/word/${id}`,
+  );
+  const convJsData = await getWordDetails.json();
+  //destructuring
+  const { word, meaning, pronunciation, sentence, synonyms } = convJsData.data;
 
-if(wanna){
+  const synonymsAdd = (x) => {
+    if (x.length === 0) {
+      return `<span class='btn bg-primary-content'>সিনোনিমস পাওয়া যায়নি</span>`;
+    }
 
-  loadingContainer.classList.remove('hidden')
-  wordContainer.classList.add('hidden')
+    const getSynonyms = x.map((x) => {
+      return `<span class="btn bg-primary-content">${x}</span>`;
+    });
+
+    return getSynonyms.join(" ");
+  };
+
+  wordDataContainer.innerHTML = `
+
+<div class="space-y-8">
+  <h2 class="font-bangla text-4xl font-semibold">${word} <span>(<i class="fa-solid fa-microphone-lines"></i>:${pronunciation})</span></h2>
+<div><p class="text-2xl font-semibold">Meaning</p>
+<span class="font-bangla font-medium">${meaning ? meaning : "অর্থ খুঁজে পাওয়া যায়নি"}</span></div>
+<div><p class="text-2xl font-semibold">Example</p>
+<span class='text-lg'>${sentence}</span></div>
+<div><p class="font-bangla font-medium text-xl">সমার্থক শব্দ গুলো</p>
+<p class="mt-2 flex items-center gap-4">${synonymsAdd(synonyms)}</p></div>
+</div>
+`;
+
+  wordModalDialogue.showModal();
 }
-else{
-  wordContainer.classList.remove('hidden')
-  loadingContainer.classList.add('hidden')
-}
 
+function spinnerShow(wanna) {
+  if (wanna) {
+    loadingContainer.classList.remove("hidden");
+    wordContainer.classList.add("hidden");
+  } else {
+    wordContainer.classList.remove("hidden");
+    loadingContainer.classList.add("hidden");
+  }
 }
