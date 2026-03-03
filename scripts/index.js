@@ -11,16 +11,7 @@ const getAllLevels = () => {
     .then((levelData) => loadAllLevelsButton(levelData.data));
 };
 
-/**
- * 
- *{
-    "id": 8,
-    "level": 2,
-    "word": "Hesitate",
-    "meaning": "দ্বিধা করা",
-    "pronunciation": "হেজিটেট"
-}
- */
+
 
 const renderLessonWords = (wordList) => {
   // word list gives empthy data it will show a default skeleton
