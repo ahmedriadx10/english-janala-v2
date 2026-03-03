@@ -104,12 +104,17 @@ levelButtonsContainer.addEventListener("click", (event) => {
 });
 
 async function infoShow(id) {
+modalSpinner(true)
+ wordModalDialogue.showModal();
   // getting specfic word details using api
 
   const getWordDetails = await fetch(
     `https://openapi.programming-hero.com/api/word/${id}`,
   );
   const convJsData = await getWordDetails.json();
+ 
+
+ 
   //destructuring
   const { word, meaning, pronunciation, sentence, synonyms } = convJsData.data;
 
@@ -124,7 +129,7 @@ async function infoShow(id) {
 
     return getSynonyms.join(" ");
   };
-
+ modalSpinner(false)
   wordDataContainer.innerHTML = `
 
 <div class="space-y-8">
@@ -138,13 +143,31 @@ async function infoShow(id) {
 </div>
 `;
 
-  wordModalDialogue.showModal();
+  
 }
 
 function listenVoice(getWord) {
   const uttreanceObj = new SpeechSynthesisUtterance(getWord);
   uttreanceObj.lang = "en-US"; //its for getting US Accent Pronounciation
   window.speechSynthesis.speak(uttreanceObj);
+}
+
+
+function modalSpinner(wanna){
+  
+  const modalSpinnerContainer=document.getElementById('spinner-container-modal')
+  if(wanna){
+
+modalSpinnerContainer.classList.remove('hidden')
+wordDataContainer.classList.add('hidden')
+
+  }
+else{
+  
+modalSpinnerContainer.classList.add('hidden')
+wordDataContainer.classList.remove('hidden')
+}
+
 }
 
 function spinnerShow(wanna) {
