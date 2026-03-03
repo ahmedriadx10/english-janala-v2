@@ -73,15 +73,6 @@ function renderDataOnUI(getDataContainer) {
     wordContainer.appendChild(wordCard);
   });
 }
-async function specificLessonDataGet(id) {
-  const getSpecificLessonWords = await fetch(
-    `https://openapi.programming-hero.com/api/level/${id}`,
-  );
-
-  const convJsData = await getSpecificLessonWords.json();
-
-  renderDataOnUI();
-}
 
 async function specificLessonDataGet(id) {
   const getSpecificLessonWords = await fetch(
@@ -92,3 +83,18 @@ async function specificLessonDataGet(id) {
 
   renderDataOnUI(convJsData.data);
 }
+
+levelButtonsContainer.addEventListener("click", (event) => {
+  const getButton = event.target;
+
+  if (getButton.classList.contains("lesson-btn")) {
+    const getAllLessonButtons =
+      levelButtonsContainer.querySelectorAll(".lesson-btn");
+
+    getAllLessonButtons.forEach((button) => {
+      button.classList.remove("bg-primary", "text-white");
+    });
+
+    getButton.classList.add("bg-primary", "text-white");
+  }
+});
