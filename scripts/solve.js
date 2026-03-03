@@ -75,12 +75,13 @@ function renderDataOnUI(getDataContainer) {
 }
 
 async function specificLessonDataGet(id) {
+  spinnerShow(true)
   const getSpecificLessonWords = await fetch(
     `https://openapi.programming-hero.com/api/level/${id}`,
   );
 
   const convJsData = await getSpecificLessonWords.json();
-
+spinnerShow(false)
   renderDataOnUI(convJsData.data);
 }
 
@@ -98,3 +99,18 @@ levelButtonsContainer.addEventListener("click", (event) => {
     getButton.classList.add("bg-primary", "text-white");
   }
 });
+
+
+function spinnerShow(wanna){
+
+if(wanna){
+
+  loadingContainer.classList.remove('hidden')
+  wordContainer.classList.add('hidden')
+}
+else{
+  wordContainer.classList.remove('hidden')
+  loadingContainer.classList.add('hidden')
+}
+
+}
