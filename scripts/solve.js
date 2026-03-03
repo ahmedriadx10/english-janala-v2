@@ -68,7 +68,7 @@ function renderDataOnUI(getDataContainer) {
 <p class="font-bangla text-2xl font-semibold">${meaning ? meaning : "অর্থ খুঁজে পাওয়া যায়নি"}/${pronunciation}</p>
 <div class="flex justify-between items-center mt-10">
 <button onclick="infoShow(${id})" class=" btn bg-primary-content text-lg" ><i class="fa-solid fa-circle-info pointer-events-none"></i></button>
-<button onclick='listenVoice(word)' class=" btn bg-primary-content text-lg"><i class="fa-solid fa-volume-high pointer-events-none"></i></button>
+<button onclick="listenVoice('${word}')" class=" btn bg-primary-content text-lg"><i class="fa-solid fa-volume-high pointer-events-none"></i></button>
 
 </div>
 </div>
@@ -139,6 +139,12 @@ async function infoShow(id) {
 `;
 
   wordModalDialogue.showModal();
+}
+
+function listenVoice(getWord) {
+  const uttreanceObj = new SpeechSynthesisUtterance(getWord);
+  uttreanceObj.lang = "en-US"; //its for getting US Accent Pronounciation
+  window.speechSynthesis.speak(uttreanceObj);
 }
 
 function spinnerShow(wanna) {
